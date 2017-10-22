@@ -12,6 +12,7 @@ client_socket.connect((IP_address, Port))
 while True:
     message_server = client_socket.recv(2048).decode()
     if "Thank you" in message_server:
+        print(message_server)
         client_socket.close()
         sys.exit()
     else:
