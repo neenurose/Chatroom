@@ -4,6 +4,7 @@ import queue
 import threading
 from threading import Thread
 from socketserver import ThreadingMixIn
+import re
 
 class client(Thread):
     def __init__(self,client_socket,client_ip,client_port):
@@ -11,10 +12,15 @@ class client(Thread):
         self.client_socket = client_socket
         self.client_ip = client_ip
         self.client_port = client_port
+        self.chatroom = ""
         print("New client thread started")
 
     def run(self):
-        self.client_socket.send(("Welcome to chatroom!").encode())
+        client_msg_to_join = self.client_socket.recv(2048).decode()
+        client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
+        self.chatroom = client_msg_to_join_split[1]
+        msg_joined = "JOINED_CHATROOM: "+self.chatroom+"\nSERVER_IP: "+host+"\nPORT: "+str(port)+"\nROOM_REF: "+str(1)+"\nJOIN_ID: "+str(1)
+        self.client_socket.send(msg_joined.encode())
         while True:
             client_message = self.client_socket.recv(2048).decode()
             print("From client "+str(self.client_ip)+":"+str(self.client_port)+": "+client_message)
