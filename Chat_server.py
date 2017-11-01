@@ -13,28 +13,63 @@ class client(Thread):
         self.client_ip = client_ip
         self.client_port = client_port
         self.chatroom = ""
+        self.chatroom_id = 0
+        self.client_id = 0
+        self.client_name = ""
         print("New client thread started")
 
     def run(self):
         client_msg_to_join = self.client_socket.recv(2048).decode()
         client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
         self.chatroom = client_msg_to_join_split[1]
-        msg_joined = "JOINED_CHATROOM: "+self.chatroom+"\nSERVER_IP: "+host+"\nPORT: "+str(port)+"\nROOM_REF: "+str(1)+"\nJOIN_ID: "+str(1)
+        self.getRoomId();
+        self.client_name = client_msg_to_join_split[7]
+        self.getClientId()
+
+        self.setFileno()
+        self.incrementCountClientChatroom()
+        self.assignChatroom()
+
+        msg_joined = "JOINED_CHATROOM: "+self.chatroom+"\nSERVER_IP: "+host+"\nPORT: "+str(port)+"\nROOM_REF: "+str(self.chatroom_id)+"\nJOIN_ID: "+str(self.client_id)
         self.client_socket.send(msg_joined.encode())
+
+        client_joined_msg_to_chatroom = self.client_name + " joined"
+        chatroom_members = self.getChatroomMembers()
+        fileno_arr = []
+        for item in chatroom_members:
+            fileno_arr.append(socket_fileno[(item,self.chatroom_id)])
+        #print("\nfilenos: ",fileno_arr)
+        thread_lock.acquire()
+        for key in s_queue.keys():
+            if key != self.client_socket.fileno() and key in fileno_arr:
+                q = s_queue[key]
+                q.put(client_joined_msg_to_chatroom)
+        thread_lock.release()
+
         while True:
             client_message = self.client_socket.recv(2048).decode()
             print("From client "+str(self.client_ip)+":"+str(self.client_port)+": "+client_message)
             if "Bye" in client_message:
                 if len(s_queue.values())>1:
                     msg_to_broadcast = "From client "+str(self.client_ip)+":"+str(self.client_port)+": "+client_message
+
+                    chatroom_members = self.getChatroomMembers()
+                    fileno_arr = []
+                    for item in chatroom_members:
+                        fileno_arr.append(socket_fileno[(item,self.chatroom_id)])
+
                     thread_lock.acquire()
                     del s_queue[self.client_socket.fileno()]
                     for key in s_queue.keys():
                         #print(s_queue)
-                        if key != self.client_socket.fileno():
+                        if key != self.client_socket.fileno() and key in fileno_arr:
                             q = s_queue[key]
                             q.put(msg_to_broadcast)
                     thread_lock.release()
+
+                    self.decrementCountClientChatroom()
+                    self.deassignChatroom()
+                    self.removeFileno()
                     #self.client_socket.send(("From server: Broadcasted").encode())
                 else:
                     thread_lock.acquire()
@@ -49,10 +84,17 @@ class client(Thread):
                 #print(len(s_queue.values()))
                 if len(s_queue.values())>1:
                     msg_to_broadcast = "\nFrom client "+str(self.client_ip)+":"+str(self.client_port)+": "+client_message
+
+                    chatroom_members = self.getChatroomMembers()
+                    fileno_arr = []
+                    for item in chatroom_members:
+                        fileno_arr.append(socket_fileno[(item,self.chatroom_id)])
                     thread_lock.acquire()
+                    #print("\nfilenos: ",fileno_arr)
+
                     for key in s_queue.keys():
                         #print(s_queue)
-                        if key != self.client_socket.fileno():
+                        if key in fileno_arr:
                             q = s_queue[key]
                             q.put(msg_to_broadcast)
                     thread_lock.release()
@@ -63,6 +105,60 @@ class client(Thread):
                     #s_queue[self.client_socket.fileno()].put(msg_to_send)
                     #thread_lock.release()
                     self.client_socket.send(msg_to_send.encode())
+
+    def getRoomId(self):
+        self.chatroom_id = chatroom_dict[self.chatroom.lower()]
+
+    def getClientId(self):
+        flag = 0
+        for key in client_dict:
+            if key == self.client_name.lower():
+                flag = 1
+        if flag == 0:
+            client_dict[self.client_name.lower()] = len(client_dict)+1
+        self.client_id = client_dict[self.client_name.lower()]
+
+    def incrementCountClientChatroom(self):
+        flag = 0
+        for key in client_chatroom_number:
+            if key == self.client_id:
+                client_chatroom_number[self.client_id] = client_chatroom_number[self.client_id] + 1
+                flag = 1
+        if flag == 0:
+            client_chatroom_number[self.client_id] = 1
+        #print("\ncount: ",client_chatroom_number)
+
+    def decrementCountClientChatroom(self):
+        client_chatroom_number[self.client_id] = client_chatroom_number[self.client_id] - 1
+        if client_chatroom_number[self.client_id] <= 0:
+            del client_chatroom_number[self.client_id]
+        #print("\ncount: ",client_chatroom_number)
+
+    def assignChatroom(self):
+        flag = 0
+        for key in chatroom_details:
+            if key == self.chatroom_id:
+                chatroom_details[self.chatroom_id].append(self.client_id)
+                flag = 1
+        if flag == 0:
+            chatroom_details[self.chatroom_id] = [self.client_id]
+        #print("\nchatroom: ",chatroom_details)
+
+    def deassignChatroom(self):
+        chatroom_details[self.chatroom_id].remove(self.client_id)
+        if len(chatroom_details[self.chatroom_id]) == 0:
+            del chatroom_details[self.chatroom_id]
+        #print("\nchatroom: ",chatroom_details)
+
+    def getChatroomMembers(self):
+        return chatroom_details[self.chatroom_id]
+
+    def setFileno(self):
+        socket_fileno[(self.client_id,self.chatroom_id)] = self.client_socket.fileno()
+
+    def removeFileno(self):
+        del socket_fileno[(self.client_id,self.chatroom_id)]
+
 
 
 class client_reply(Thread):
@@ -85,6 +181,12 @@ class client_reply(Thread):
             except KeyError as e:
                 pass
 
+
+chatroom_dict = {"room1":1,"room2":2,"room3":3,"room4":4,"room5":5}
+client_dict = {}
+chatroom_details = {}
+client_chatroom_number = {}
+socket_fileno = {}
 
 thread_lock = threading.Lock()
 s_queue = {}
