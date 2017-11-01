@@ -48,10 +48,10 @@ class client(Thread):
 
         while True:
             client_message = self.client_socket.recv(2048).decode()
-            print("From client "+str(self.client_ip)+":"+str(self.client_port)+": "+client_message)
-            if "Bye" in client_message:
+            print("From client "+self.client_name+": "+client_message)
+            if "LEAVE_CHATROOM" in client_message:
                 if len(s_queue.values())>1:
-                    msg_to_broadcast = "From client "+str(self.client_ip)+":"+str(self.client_port)+": "+client_message
+                    msg_to_broadcast = "\n"+self.client_name+" has disconnected."
 
                     chatroom_members = self.getChatroomMembers()
                     fileno_arr = []
@@ -72,18 +72,23 @@ class client(Thread):
                     self.removeFileno()
                     #self.client_socket.send(("From server: Broadcasted").encode())
                 else:
+                    self.decrementCountClientChatroom()
+                    self.deassignChatroom()
+                    self.removeFileno()
                     thread_lock.acquire()
                     del s_queue[self.client_socket.fileno()]
                     thread_lock.release()
 
-                self.client_socket.send(("Thank you for connecting").encode())
+                left_chatroom_msg = "\nLEFT_CHATROOM: "+str(self.chatroom_id)+"\nJOIN_ID: "+str(self.client_id)
+                self.client_socket.send(left_chatroom_msg.encode())
                 break;
                 #self.client_socket.close()
                 #sys.exit()
             else:
                 #print(len(s_queue.values()))
+                chat_msg = "CHAT: "+str(self.chatroom_id)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+client_message+"\n\n"
                 if len(s_queue.values())>1:
-                    msg_to_broadcast = "\nFrom client "+str(self.client_ip)+":"+str(self.client_port)+": "+client_message
+                    #chat_msg = "CHAT: "+str(self.chatroom_id)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+client_message+"\n\n"
 
                     chatroom_members = self.getChatroomMembers()
                     fileno_arr = []
@@ -94,13 +99,13 @@ class client(Thread):
 
                     for key in s_queue.keys():
                         #print(s_queue)
-                        if key in fileno_arr:
+                        if key != self.client_socket.fileno() and key in fileno_arr:
                             q = s_queue[key]
-                            q.put(msg_to_broadcast)
+                            q.put(chat_msg)
                     thread_lock.release()
-                    self.client_socket.send(("Me: "+client_message).encode())
+                    self.client_socket.send((chat_msg).encode())
                 else:
-                    msg_to_send = "Me: "+client_message
+                    msg_to_send = chat_msg
                     #thread_lock.acquire()
                     #s_queue[self.client_socket.fileno()].put(msg_to_send)
                     #thread_lock.release()
