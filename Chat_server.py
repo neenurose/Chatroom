@@ -112,6 +112,13 @@ class client(Thread):
                     self.client_socket.send(msg_to_send.encode())
 
     def getRoomId(self):
+        flag = 0;
+        for key in chatroom_dict:
+            if key == self.chatroom.lower():
+                flag = 1
+                break
+        if flag == 0:
+            chatroom_dict[self.chatroom.lower()] = len(chatroom_dict)+1
         self.chatroom_id = chatroom_dict[self.chatroom.lower()]
 
     def getClientId(self):
@@ -187,7 +194,7 @@ class client_reply(Thread):
                 pass
 
 
-chatroom_dict = {"room1":1,"room2":2,"room3":3,"room4":4,"room5":5}
+chatroom_dict = {}
 client_dict = {}
 chatroom_details = {}
 client_chatroom_number = {}
