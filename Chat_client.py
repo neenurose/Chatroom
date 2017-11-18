@@ -24,7 +24,7 @@ class server_thread(Thread):
         self.c_socket.send(msg_to_join.encode())
         while True:
             message_server = self.c_socket.recv(2048).decode()
-            if "LEFT_CHATROOM" in message_server:
+            if "DISCONNECT" in message_server:
                 print(message_server)
                 flag=1
                 self.c_socket.close()
