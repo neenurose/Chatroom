@@ -19,6 +19,12 @@ class client(Thread):
         print("New client thread started")
 
     def run(self):
+        client_msg_helo = self.client_socket.recv(2048).decode()
+        #for HELO message from client
+        if "HELO" in client_msg_helo:
+            msg_helo = client_msg_helo+"\nIP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
+        self.client_socket.send(msg_helo.encode())
+
         client_msg_to_join = self.client_socket.recv(2048).decode()
         client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
         self.chatroom = client_msg_to_join_split[1]

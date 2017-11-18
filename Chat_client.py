@@ -5,15 +5,21 @@ from threading import Thread
 from socketserver import ThreadingMixIn
 
 class server_thread(Thread):
-    def __init__(self,c_socket,c_client_ip,c_client_port,c_chatroom,c_client_name):
+    def __init__(self,c_socket,c_client_ip,c_client_port,c_chatroom,c_client_name,hello_msg):
         Thread.__init__(self)
         self.c_socket = c_socket
         self.c_client_ip = c_client_ip
         self.c_client_port = c_client_port
         self.c_chatroom = c_chatroom
         self.c_client_name = c_client_name
+        self.hello_msg = hello_msg
 
     def run(self):
+        self.c_socket.send(self.hello_msg.encode())
+        helo_reply_from_server = self.c_socket.recv(2048).decode()
+        print("\n",helo_reply_from_server)
+
+        #msg_test = input("Please enter join msg")
         msg_to_join = "JOIN_CHATROOM: "+self.c_chatroom+"\nCLIENT_IP: "+str(self.c_client_ip)+"\nPORT: "+str(self.c_client_port)+"\nCLIENT_NAME: "+self.c_client_name+"\n"
         self.c_socket.send(msg_to_join.encode())
         while True:
@@ -66,9 +72,11 @@ Port2 = 5050
 flag=0
 threads = []
 
+helo_msg = input("Enter helo message:")
+
 
 try:
-    clientThread = server_thread(client_socket,client_ip,client_port,chatroom,client_name)
+    clientThread = server_thread(client_socket,client_ip,client_port,chatroom,client_name,helo_msg)
     clientThread.daemon = True
     clientThread.start()
 
