@@ -61,6 +61,39 @@ class client(Thread):
             client_message = self.client_socket.recv(2048).decode()
             #print("From client "+self.client_name+": "+client_message)
 
+            if "DISCONNECT" in client_message.split(':')[0]:
+                #print(client_message)
+                #thread_lock.acquire()
+                #del s_queue[self.client_socket.fileno()]
+                #thread_lock.release()
+                disconnect_msg = self.client_name+" has left this chatroom."
+                for i in self.chatroom_id:
+                    chatroom_members = self.getChatroomMembers(i)
+                    fileno_arr = []
+                    for item in chatroom_members:
+                        fileno_arr.append(socket_fileno[(item,i)])
+
+                    thread_lock.acquire()
+                    #del s_queue[self.client_socket.fileno()]
+                    for key in s_queue.keys():
+                        #print(s_queue)
+                        if key != self.client_socket.fileno() and key in fileno_arr:
+                            q = s_queue[key]
+                            q.put(disconnect_msg)
+                    thread_lock.release()
+                    #print(i)
+                    self.decrementCountClientChatroom()
+                    self.deassignChatroom(i)
+                    self.removeFileno(i)
+                self.chatroom_id = []
+
+
+                self.client_socket.send(disconnect_msg.encode())
+                #self.client_socket.shutdown(socket.SHUT_RDWR)
+                #self.client_socket.close()
+                #break;
+
+
             if "JOIN_CHATROOM" in client_message:
                client_msg_to_join = client_message
                client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
@@ -173,7 +206,7 @@ class client(Thread):
                             #thread_lock.release()
                             self.client_socket.send(msg_to_send.encode())
                     else:
-                        msg_to_send = "Invalid room id..."
+                        msg_to_send = self.client_name+" has left this chatroom."
                         self.client_socket.send(msg_to_send.encode())
 
 
