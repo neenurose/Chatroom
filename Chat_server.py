@@ -16,7 +16,7 @@ class client(Thread):
         self.chatroom_id = 0
         self.client_id = 0
         self.client_name = ""
-        print("New client thread started")
+        #print("New client thread started")
 
     def run(self):
         client_msg_helo = self.client_socket.recv(2048).decode()
@@ -54,7 +54,7 @@ class client(Thread):
 
         while True:
             client_message = self.client_socket.recv(2048).decode()
-            print("From client "+self.client_name+": "+client_message)
+            #print("From client "+self.client_name+": "+client_message)
             if "LEAVE_CHATROOM" in client_message:
                 if len(s_queue.values())>1:
                     msg_to_broadcast = "\n"+self.client_name+" has disconnected."
@@ -192,7 +192,7 @@ class client_reply(Thread):
         while True:
             try:
                 msg = s_queue[self.client_socket.fileno()].get(False)
-                print(msg)
+                #print(msg)
                 client_soc.send(msg.encode())
             except queue.Empty:
                 msg = "no message"
