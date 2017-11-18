@@ -106,7 +106,7 @@ class client(Thread):
                         fileno_arr.append(socket_fileno[(item,chatroom_id_local)])
 
                     thread_lock.acquire()
-                    del s_queue[self.client_socket.fileno()]
+                    #del s_queue[self.client_socket.fileno()]
                     for key in s_queue.keys():
                         #print(s_queue)
                         if key != self.client_socket.fileno() and key in fileno_arr:
@@ -123,7 +123,7 @@ class client(Thread):
                     self.deassignChatroom(chatroom_id_local)
                     self.removeFileno(chatroom_id_local)
                     thread_lock.acquire()
-                    del s_queue[self.client_socket.fileno()]
+                    #del s_queue[self.client_socket.fileno()]
                     thread_lock.release()
                 self.chatroom_id.remove(chatroom_id_local)
 
@@ -152,6 +152,7 @@ class client(Thread):
                             #chat_msg = "CHAT: "+str(self.chatroom_id)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+client_message+"\n\n"
 
                             chatroom_members = self.getChatroomMembers(chatroom_id_local)
+                            #print(chatroom_members)
                             fileno_arr = []
                             for item in chatroom_members:
                                 fileno_arr.append(socket_fileno[(item,chatroom_id_local)])
