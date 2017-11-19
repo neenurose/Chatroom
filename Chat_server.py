@@ -315,7 +315,7 @@ class client_reply(Thread):
                 print(msg)
                 #client_soc.send(msg.encode())
                 self.client_socket.send(msg.encode())
-            except queue.Empty:
+            except Queue.Empty:
                 msg = "no message"
             except KeyError as e:
                 pass
