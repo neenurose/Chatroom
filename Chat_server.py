@@ -137,7 +137,6 @@ class client(Thread):
                 for key in s_queue.keys():
                     if key in fileno_arr:
                         q = s_queue[key]
-
                         q.put(client_joined_msg_to_chatroom)
                 thread_lock.release()
 
@@ -301,19 +300,18 @@ class client(Thread):
 
     def broadcast(self,client_socket,msg):
         print(msg)
+        client_socket.send(msg.decode())
+        '''
         for sock in socket_connections:
             if(sock != server_socket):
                 print(sock)
                 print(client_socket)
-                sock.send(msg.encode())
-                '''
                 try:
                     msg = s_queue[sock.fileno()].get(False)
                     sock.send(msg.encode())
                 except Queue.Empty:
                     pass
-                '''
-
+        '''
 
 
 
