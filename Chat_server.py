@@ -137,7 +137,7 @@ class client(Thread):
                 for key in s_queue.keys():
                     if key in fileno_arr:
                         q = s_queue[key]
-                        print(q)
+                        print(key)
                         q.put(client_joined_msg_to_chatroom)
                 thread_lock.release()
                 self.broadcast(self.client_socket,client_joined_msg_to_chatroom)
