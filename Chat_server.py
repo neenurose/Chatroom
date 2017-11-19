@@ -302,7 +302,7 @@ class client_reply(Thread):
     def __init__(self,client_socket):
         Thread.__init__(self)
         self.client_socket = client_socket;
-        #print("hello")
+        print("second thread")
 
     def run(self):
         server_socket2.listen(1)
