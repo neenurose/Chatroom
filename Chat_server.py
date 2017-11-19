@@ -140,7 +140,7 @@ class client(Thread):
 
                         q.put(client_joined_msg_to_chatroom)
                 thread_lock.release()
-                self.client_socket.send(client_joined_msg_to_chatroom.encode())
+
                 #self.broadcast(self.client_socket,client_joined_msg_to_chatroom)
 
 
@@ -302,11 +302,14 @@ class client(Thread):
         for sock in socket_connections:
             if(sock != server_socket):
                 print(sock)
+                print(client_socket)
+                '''
                 try:
                     msg = s_queue[sock.fileno()].get(False)
                     sock.send(msg.encode())
                 except Queue.Empty:
                     pass
+                '''
 
 
 
