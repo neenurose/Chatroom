@@ -126,7 +126,7 @@ class client(Thread):
                 print(msg_joined)
                 self.client_socket.send(msg_joined.encode())
 
-                client_joined_msg_to_chatroom = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name + " has joined this chatroom.\n\n"
+                client_joined_msg_to_chatroom = "CHAT:"+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name + " has joined this chatroom.\n\n"
                 chatroom_members = self.getChatroomMembers(chatroom_id_local)
                 print(chatroom_members)
                 fileno_arr = []
@@ -311,7 +311,7 @@ class client_reply(Thread):
         while True:
             try:
                 msg = s_queue[self.client_socket.fileno()].get(False)
-                #print(msg)
+                print(msg)
                 client_soc.send(msg.encode())
             except queue.Empty:
                 msg = "no message"
