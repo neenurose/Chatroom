@@ -140,7 +140,8 @@ class client(Thread):
 
                         q.put(client_joined_msg_to_chatroom)
                 thread_lock.release()
-                self.broadcast(self.client_socket,client_joined_msg_to_chatroom)
+                self.client_socket.send(client_joined_msg_to_chatroom.encode())
+                #self.broadcast(self.client_socket,client_joined_msg_to_chatroom)
 
 
 
