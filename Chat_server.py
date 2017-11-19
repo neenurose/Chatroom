@@ -140,7 +140,8 @@ class client(Thread):
                         q.put(client_joined_msg_to_chatroom)
                 thread_lock.release()
 
-
+                for f_no in fileno_arr:
+                    self.broadcast(f_no)
                 #self.broadcast(self.client_socket,client_joined_msg_to_chatroom)
 
 
@@ -235,8 +236,7 @@ class client(Thread):
                 #print(msg_to_send)
                 #self.broadcast()
                 #self.client_socket.send(msg_to_send.encode())
-                for f_no in fileno_arr:
-                    self.broadcast(f_no)
+
 
 
     def getRoomId(self,chatroom_local):
