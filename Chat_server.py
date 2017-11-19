@@ -1,6 +1,6 @@
 import socket
 import sys
-import queue
+import Queue
 import threading
 from threading import Thread
 from socketserver import ThreadingMixIn
