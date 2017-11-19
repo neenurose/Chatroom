@@ -61,6 +61,12 @@ class client(Thread):
             client_message = self.client_socket.recv(2048).decode()
             #print("From client "+self.client_name+": "+client_message)
 
+            if "KILL_SERVICE" in client_message:
+                server_socket2.close()
+                server_socket.close()
+                #print(server_socket.fileno())
+                break;
+
             if "DISCONNECT" in client_message.split(':')[0]:
                 #print(client_message)
                 #thread_lock.acquire()
@@ -325,7 +331,10 @@ server_socket2.bind(('',port2))
 
 while True:
     print("Server is ready and listening...")
-    (client_socket,(client_ip,client_port)) = server_socket.accept()
+    try:
+        (client_socket,(client_ip,client_port)) = server_socket.accept()
+    except OSError as err:
+        sys.exit()
     q = queue.Queue()
     thread_lock.acquire()
 
