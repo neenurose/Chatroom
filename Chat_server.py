@@ -306,7 +306,7 @@ class client_reply(Thread):
 
     def run(self):
         print("hello",server_socket2)
-        server_socket2.listen(5)
+        #server_socket2.listen(5)
         (client_soc,(client_ip_addr, client_port_num))=server_socket2.accept()
         print("ocket2 accepted",self.client_socket.fileno())
         while True:
@@ -345,6 +345,7 @@ server_socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 port2 = 5050
 server_socket2.bind(('',port2))
+server_socket2.listen(5)
 
 
 while True:
