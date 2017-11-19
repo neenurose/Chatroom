@@ -232,7 +232,7 @@ class client(Thread):
             else:
                 msg_to_send = "invalid"
                 print(msg_to_send)
-                self.broadcast(self)
+                self.broadcast()
                 #self.client_socket.send(msg_to_send.encode())
 
 
