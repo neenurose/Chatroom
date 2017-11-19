@@ -301,6 +301,7 @@ class client(Thread):
         for sock in socket_connections:
             if(sock != server_socket):
                 print(sock)
+                print(server_socket)
                 msg = s_queue[sock.fileno()].get(False)
                 sock.send(msg.encode())
 
