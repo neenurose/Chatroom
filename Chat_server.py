@@ -109,33 +109,36 @@ class client(Thread):
 
 
             elif "JOIN_CHATROOM" in client_message:
-               client_msg_to_join = client_message
-               client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
-               self.chatroom.append(client_msg_to_join_split[1])
-               chatroom_local = client_msg_to_join_split[1]
-               chatroom_id_local = self.getRoomId(chatroom_local);
-               self.client_name = client_msg_to_join_split[7]
-               self.getClientId()
+                client_msg_to_join = client_message
+                print("\nin join",client_msg_to_join+"\n")
+                client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
+                self.chatroom.append(client_msg_to_join_split[1])
+                chatroom_local = client_msg_to_join_split[1]
+                chatroom_id_local = self.getRoomId(chatroom_local);
+                self.client_name = client_msg_to_join_split[7]
+                self.getClientId()
 
-               self.setFileno(chatroom_id_local)
-               self.incrementCountClientChatroom()
-               self.assignChatroom(chatroom_id_local)
+                self.setFileno(chatroom_id_local)
+                self.incrementCountClientChatroom()
+                self.assignChatroom(chatroom_id_local)
 
-               msg_joined = "JOINED_CHATROOM: "+chatroom_local+"\nSERVER_IP: "+host+"\nPORT: "+str(port)+"\nROOM_REF: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)
-               self.client_socket.send(msg_joined.encode())
+                msg_joined = "JOINED_CHATROOM: "+chatroom_local+"\nSERVER_IP: "+host+"\nPORT: "+str(port)+"\nROOM_REF: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)
+                self.client_socket.send(msg_joined.encode())
 
-               client_joined_msg_to_chatroom = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name + " has joined this chatroom.\n\n"
-               chatroom_members = self.getChatroomMembers(chatroom_id_local)
-               fileno_arr = []
-               for item in chatroom_members:
-                   fileno_arr.append(socket_fileno[(item,chatroom_id_local)])
-               #print("\nfilenos: ",fileno_arr)
-               thread_lock.acquire()
-               for key in s_queue.keys():
-                   if key != self.client_socket.fileno() and key in fileno_arr:
-                       q = s_queue[key]
-                       q.put(client_joined_msg_to_chatroom)
-               thread_lock.release()
+                client_joined_msg_to_chatroom = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name + " has joined this chatroom.\n\n"
+                chatroom_members = self.getChatroomMembers(chatroom_id_local)
+                fileno_arr = []
+                for item in chatroom_members:
+                    fileno_arr.append(socket_fileno[(item,chatroom_id_local)])
+                #print("\nfilenos: ",fileno_arr)
+                thread_lock.acquire()
+                for key in s_queue.keys():
+                    if key != self.client_socket.fileno() and key in fileno_arr:
+                        q = s_queue[key]
+                        q.put(client_joined_msg_to_chatroom)
+                thread_lock.release()
+
+
 
             elif "LEAVE_CHATROOM" in client_message:
                 client_msg_to_leave_split = re.findall(r"[\w']+",client_message)
