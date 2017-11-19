@@ -140,6 +140,7 @@ class client(Thread):
                         print(q)
                         q.put(client_joined_msg_to_chatroom)
                 thread_lock.release()
+                self.broadcast(self.client_socket,client_joined_msg_to_chatroom)
 
 
 
@@ -296,6 +297,13 @@ class client(Thread):
     def removeFileno(self,chatroom_id_local):
         del socket_fileno[(self.client_id,chatroom_id_local)]
 
+    def broadcast(self,client_socket,msg):
+        for sock in socket_connections:
+            print(sock)
+            msg = s_queue[sock.fileno()].get(False)
+            sock.send(msg.encode())
+
+
 
 
 class client_reply(Thread):
@@ -326,6 +334,7 @@ client_dict = {}
 chatroom_details = {}
 client_chatroom_number = {}
 socket_fileno = {}
+socket_connections = []
 
 thread_lock = threading.Lock()
 s_queue = {}
@@ -341,16 +350,17 @@ port = int(sys.argv[1])
 server_socket.bind(('',port))
 server_socket.listen(5)
 
-server_socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-port2 = 5050
-server_socket2.bind(('',port2))
+#server_socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#server_socket2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+#port2 = 5050
+#server_socket2.bind(('',port2))
 
 
 while True:
     print("Server is ready and listening...")
     try:
         (client_socket,(client_ip,client_port)) = server_socket.accept()
+        socket_connections.append(client_socket)
     except OSError as err:
         sys.exit()
     q = Queue.Queue()
@@ -371,6 +381,6 @@ while True:
     client_thread.daemon = True
     client_thread.start()
 
-    client_thread2 = client_reply(client_socket)
-    client_thread2.daemon = True
-    client_thread2.start()
+    #client_thread2 = client_reply(client_socket)
+    #client_thread2.daemon = True
+    #client_thread2.start()

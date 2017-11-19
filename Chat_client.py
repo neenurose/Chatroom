@@ -82,9 +82,9 @@ try:
 
     clientThread2 = server_reply(client_socket)
     clientThread2.daemon = True
-    clientThread2.start()
+    #clientThread2.start()
     threads.append(clientThread)
-    threads.append(clientThread2)
+    #threads.append(clientThread2)
     while True:
         for t in threads:
             t.join(600)
