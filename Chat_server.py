@@ -233,7 +233,7 @@ class client(Thread):
             else:
                 msg_to_send = "Invalid message format"
                 print(msg_to_send)
-                self.client_socket.send(msg_to_send.encode())
+                #self.client_socket.send(msg_to_send.encode())
 
 
     def getRoomId(self,chatroom_local):
