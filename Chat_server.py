@@ -230,7 +230,7 @@ class client(Thread):
                         msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom."
                         self.client_socket.send(msg_to_send.encode())
             else:
-                msg_to_send = "Invalid message format"
+                msg_to_send =
                 print(msg_to_send)
                 #self.client_socket.send(msg_to_send.encode())
 
@@ -299,19 +299,15 @@ class client(Thread):
         del socket_fileno[(self.client_id,chatroom_id_local)]
 
     def broadcast(self,client_socket,msg):
-        print(msg)
-        client_socket.send(msg.decode())
-        '''
-        for sock in socket_connections:
-            if(sock != server_socket):
-                print(sock)
-                print(client_socket)
-                try:
-                    msg = s_queue[sock.fileno()].get(False)
-                    sock.send(msg.encode())
-                except Queue.Empty:
-                    pass
-        '''
+        while true:
+            try:
+                msg = s_queue[sock.fileno()].get(False)
+                sock.send(msg.encode())
+            except Queue.Empty:
+                pass
+        
+
+
 
 
 
