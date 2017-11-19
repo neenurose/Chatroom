@@ -3,7 +3,7 @@ import sys
 import Queue
 import threading
 from threading import Thread
-from socketserver import ThreadingMixIn
+from SocketServer import ThreadingMixIn
 import re
 
 class client(Thread):
