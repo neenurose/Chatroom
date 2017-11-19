@@ -307,14 +307,14 @@ class client_reply(Thread):
     def run(self):
         print("hello",server_socket2)
         #server_socket2.listen(5)
-        (client_soc,(client_ip_addr, client_port_num))=server_socket2.accept()
+        #(client_soc,(client_ip_addr, client_port_num))=server_socket2.accept()
         print("ocket2 accepted",self.client_socket.fileno())
         while True:
-            print("in run")
             try:
                 msg = s_queue[self.client_socket.fileno()].get(False)
                 print(msg)
-                client_soc.send(msg.encode())
+                #client_soc.send(msg.encode())
+                self.client_socket.send(msg.encode())
             except queue.Empty:
                 msg = "no message"
             except KeyError as e:
@@ -345,7 +345,6 @@ server_socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 port2 = 5050
 server_socket2.bind(('',port2))
-server_socket2.listen(5)
 
 
 while True:
