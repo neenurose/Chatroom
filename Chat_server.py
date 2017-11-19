@@ -58,9 +58,9 @@ class client(Thread):
         chatroom_id_local = 0
         chatroom_local = ""
         while True:
-            print("Inside loop\n\n")
+            #print("Inside loop\n\n")
             client_message = self.client_socket.recv(2048).decode()
-            print("From client "+self.client_name+": "+client_message+"\n\n")
+            #print("From client "+self.client_name+": "+client_message+"\n\n")
 
             client_msg_helo = client_message
             if "HELO" in client_msg_helo:
