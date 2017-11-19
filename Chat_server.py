@@ -67,13 +67,13 @@ class client(Thread):
                 msg_helo = client_msg_helo+"\nIP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
                 self.client_socket.send(msg_helo.encode())
 
-            elif "KILL_SERVICE" in client_message:
+            if "KILL_SERVICE" in client_message:
                 #server_socket2.close()
                 #server_socket.close()
                 #print(server_socket.fileno())
                 break;
 
-            elif "DISCONNECT" in client_message.split(':')[0]:
+            if "DISCONNECT" in client_message.split(':')[0]:
                 #print(client_message)
                 #thread_lock.acquire()
                 #del s_queue[self.client_socket.fileno()]
@@ -108,7 +108,7 @@ class client(Thread):
                 #break;
 
 
-            elif "JOIN_CHATROOM" in client_message:
+            if "JOIN_CHATROOM" in client_message:
                 client_msg_to_join = client_message
                 print("\nin join",client_msg_to_join+"\n")
                 client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
@@ -146,7 +146,7 @@ class client(Thread):
 
 
 
-            elif "LEAVE_CHATROOM" in client_message:
+            if "LEAVE_CHATROOM" in client_message:
                 client_msg_to_leave_split = re.findall(r"[\w']+",client_message)
                 #self.chatroom.append(client_msg_to_leave_split[1])
                 chatroom_id_local = client_msg_to_leave_split[1]
@@ -188,7 +188,7 @@ class client(Thread):
                 #break;
                 #self.client_socket.close()
                 #sys.exit()
-            elif "CHAT" in client_message:
+            if "CHAT" in client_message:
                 #print(len(s_queue.values()))
                 client_msg_to_chat_split = re.findall(r"[\w']+",client_message)
 
@@ -231,7 +231,7 @@ class client(Thread):
                     else:
                         msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom."
                         self.client_socket.send(msg_to_send.encode())
-            else:
+            #else:
                 #msg_to_send = "invalid"
                 #print(msg_to_send)
                 #self.broadcast()
