@@ -140,6 +140,7 @@ class client(Thread):
                         q.put(client_joined_msg_to_chatroom)
                 thread_lock.release()
 
+
                 #self.broadcast(self.client_socket,client_joined_msg_to_chatroom)
 
 
@@ -230,10 +231,12 @@ class client(Thread):
                         msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom."
                         self.client_socket.send(msg_to_send.encode())
             else:
-                msg_to_send = "invalid"
-                print(msg_to_send)
-                self.broadcast()
+                #msg_to_send = "invalid"
+                #print(msg_to_send)
+                #self.broadcast()
                 #self.client_socket.send(msg_to_send.encode())
+                for f_no in fileno_arr:
+                    self.broadcast(f_no)
 
 
     def getRoomId(self,chatroom_local):
@@ -299,11 +302,12 @@ class client(Thread):
     def removeFileno(self,chatroom_id_local):
         del socket_fileno[(self.client_id,chatroom_id_local)]
 
-    def broadcast(self):
+    def broadcast(self,f_no):
         for sock in socket_connections:
-            if sock!= server_socket:
+            if sock.fileno()==f_no:
                 try:
                     msg = s_queue[sock.fileno()].get(False)
+                    print(msg)
                     sock.send(msg.encode())
                 except Queue.Empty:
                     pass
@@ -351,6 +355,8 @@ chatroom_details = {}
 client_chatroom_number = {}
 socket_fileno = {}
 socket_connections = []
+
+fileno_arr = []
 
 thread_lock = threading.Lock()
 s_queue = {}
