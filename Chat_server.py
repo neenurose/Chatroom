@@ -135,8 +135,9 @@ class client(Thread):
                 #print("\nfilenos: ",fileno_arr)
                 thread_lock.acquire()
                 for key in s_queue.keys():
-                    if key != self.client_socket.fileno() and key in fileno_arr:
+                    if key in fileno_arr:
                         q = s_queue[key]
+                        print(q)
                         q.put(client_joined_msg_to_chatroom)
                 thread_lock.release()
 
