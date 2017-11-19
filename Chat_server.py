@@ -72,8 +72,9 @@ class client(Thread):
                 #thread_lock.acquire()
                 #del s_queue[self.client_socket.fileno()]
                 #thread_lock.release()
-                disconnect_msg = self.client_name+" has left this chatroom."
+                disconnect_msg_1 = self.client_name+" has left this chatroom.\n\n"
                 for i in self.chatroom_id:
+                    disconnect_msg = "CHAT: "+str(i)+"\nCLIENT_NAME: "+self.client_name+"\n"+disconnect_msg_1
                     chatroom_members = self.getChatroomMembers(i)
                     fileno_arr = []
                     for item in chatroom_members:
@@ -91,6 +92,7 @@ class client(Thread):
                     self.decrementCountClientChatroom()
                     self.deassignChatroom(i)
                     self.removeFileno(i)
+                    #self.client_socket.send(disconnect_msg.encode())
                 self.chatroom_id = []
 
 
@@ -100,7 +102,7 @@ class client(Thread):
                 #break;
 
 
-            if "JOIN_CHATROOM" in client_message:
+            elif "JOIN_CHATROOM" in client_message:
                client_msg_to_join = client_message
                client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
                self.chatroom.append(client_msg_to_join_split[1])
@@ -116,7 +118,7 @@ class client(Thread):
                msg_joined = "JOINED_CHATROOM: "+chatroom_local+"\nSERVER_IP: "+host+"\nPORT: "+str(port)+"\nROOM_REF: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)
                self.client_socket.send(msg_joined.encode())
 
-               client_joined_msg_to_chatroom = self.client_name + " joined"
+               client_joined_msg_to_chatroom = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name + " has joined this chatroom.\n\n"
                chatroom_members = self.getChatroomMembers(chatroom_id_local)
                fileno_arr = []
                for item in chatroom_members:
@@ -129,7 +131,7 @@ class client(Thread):
                        q.put(client_joined_msg_to_chatroom)
                thread_lock.release()
 
-            if "LEAVE_CHATROOM" in client_message:
+            elif "LEAVE_CHATROOM" in client_message:
                 client_msg_to_leave_split = re.findall(r"[\w']+",client_message)
                 #self.chatroom.append(client_msg_to_leave_split[1])
                 chatroom_id_local = client_msg_to_leave_split[1]
@@ -137,7 +139,7 @@ class client(Thread):
                 #chatroom_id_local = self.getRoomId(chatroom_local);
 
                 if len(s_queue.values())>1:
-                    msg_to_broadcast = "\n"+self.client_name+" has disconnected."
+                    msg_to_broadcast = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom.\n\n"
 
                     chatroom_members = self.getChatroomMembers(chatroom_id_local)
                     fileno_arr = []
@@ -171,7 +173,7 @@ class client(Thread):
                 #break;
                 #self.client_socket.close()
                 #sys.exit()
-            else:
+            elif "CHAT" in client_message:
                 #print(len(s_queue.values()))
                 client_msg_to_chat_split = re.findall(r"[\w']+",client_message)
 
@@ -212,9 +214,11 @@ class client(Thread):
                             #thread_lock.release()
                             self.client_socket.send(msg_to_send.encode())
                     else:
-                        msg_to_send = self.client_name+" has left this chatroom."
+                        msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom."
                         self.client_socket.send(msg_to_send.encode())
-
+            else:
+                msg_to_send = "Invalid message format"
+                self.client_socket.send(msg_to_send.encode())
 
 
     def getRoomId(self,chatroom_local):
