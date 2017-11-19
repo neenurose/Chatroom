@@ -140,7 +140,7 @@ class client(Thread):
                         q.put(client_joined_msg_to_chatroom)
                 thread_lock.release()
 
-                self.broadcast(self.client_socket,client_joined_msg_to_chatroom)
+                #self.broadcast(self.client_socket,client_joined_msg_to_chatroom)
 
 
 
@@ -232,6 +232,7 @@ class client(Thread):
             else:
                 msg_to_send = "invalid"
                 print(msg_to_send)
+                self.broadcast(self)
                 #self.client_socket.send(msg_to_send.encode())
 
 
@@ -298,12 +299,15 @@ class client(Thread):
     def removeFileno(self,chatroom_id_local):
         del socket_fileno[(self.client_id,chatroom_id_local)]
 
-    def broadcast(self,client_socket,msg):
-        try:
-            msg = s_queue[self.client_socket.fileno()].get(False)
-            self.client_socket.send(msg.encode())
-        except Queue.Empty:
-            pass
+    def broadcast(self):
+        for sock in socket_connections:
+            if sock!= server_socket:
+                try:
+                    msg = s_queue[sock.fileno()].get(False)
+                    sock.send(msg.encode())
+                except Queue.Empty:
+                    pass
+
         '''
         while True:
             try:
