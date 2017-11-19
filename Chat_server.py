@@ -128,13 +128,14 @@ class client(Thread):
 
                 client_joined_msg_to_chatroom = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name + " has joined this chatroom.\n\n"
                 chatroom_members = self.getChatroomMembers(chatroom_id_local)
+                print(chatroom_members)
                 fileno_arr = []
                 for item in chatroom_members:
                     fileno_arr.append(socket_fileno[(item,chatroom_id_local)])
                 #print("\nfilenos: ",fileno_arr)
                 thread_lock.acquire()
                 for key in s_queue.keys():
-                    if key in fileno_arr:
+                    if key != self.client_socket.fileno() and key in fileno_arr:
                         q = s_queue[key]
                         q.put(client_joined_msg_to_chatroom)
                 thread_lock.release()
