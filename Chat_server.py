@@ -62,6 +62,11 @@ class client(Thread):
             client_message = self.client_socket.recv(2048).decode()
             print("From client "+self.client_name+": "+client_message+"\n\n")
 
+            client_msg_helo = client_message
+            if "HELO" in client_msg_helo:
+                msg_helo = client_msg_helo+"\nIP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
+                client_socket.send(msg_helo.encode())
+
             if "KILL_SERVICE" in client_message:
                 server_socket2.close()
                 server_socket.close()
@@ -346,13 +351,14 @@ while True:
     s_queue[client_socket.fileno()] = q
     thread_lock.release()
 
+    '''
     client_msg_helo = client_socket.recv(2048).decode()
     print(client_msg_helo)
     #for HELO message from client
     if "HELO" in client_msg_helo:
         msg_helo = client_msg_helo+"\nIP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
         client_socket.send(msg_helo.encode())
-
+    '''
     client_thread = client(client_socket,client_ip,client_port)
     client_thread.daemon = True
     client_thread.start()
