@@ -65,15 +65,15 @@ class client(Thread):
             client_msg_helo = client_message
             if "HELO" in client_msg_helo:
                 msg_helo = client_msg_helo+"\nIP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
-                client_socket.send(msg_helo.encode())
+                self.client_socket.send(msg_helo.encode())
 
-            if "KILL_SERVICE" in client_message:
+            elif "KILL_SERVICE" in client_message:
                 server_socket2.close()
                 server_socket.close()
                 #print(server_socket.fileno())
                 break;
 
-            if "DISCONNECT" in client_message.split(':')[0]:
+            elif "DISCONNECT" in client_message.split(':')[0]:
                 #print(client_message)
                 #thread_lock.acquire()
                 #del s_queue[self.client_socket.fileno()]
