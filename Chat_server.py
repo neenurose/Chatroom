@@ -307,7 +307,7 @@ class client_reply(Thread):
     def run(self):
         server_socket2.listen(1)
         (client_soc,(client_ip_addr, client_port_num))=server_socket2.accept()
-        #print(self.client_socket.fileno())
+        print("ocket2 accepted",self.client_socket.fileno())
         while True:
             print("in run")
             try:
