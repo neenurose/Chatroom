@@ -68,8 +68,8 @@ class client(Thread):
                 self.client_socket.send(msg_helo.encode())
 
             elif "KILL_SERVICE" in client_message:
-                server_socket2.close()
-                server_socket.close()
+                #server_socket2.close()
+                #server_socket.close()
                 #print(server_socket.fileno())
                 break;
 
@@ -309,6 +309,7 @@ class client_reply(Thread):
         (client_soc,(client_ip_addr, client_port_num))=server_socket2.accept()
         #print(self.client_socket.fileno())
         while True:
+            print("in run")
             try:
                 msg = s_queue[self.client_socket.fileno()].get(False)
                 print(msg)
