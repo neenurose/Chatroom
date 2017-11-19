@@ -230,7 +230,7 @@ class client(Thread):
                         msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom."
                         self.client_socket.send(msg_to_send.encode())
             else:
-                msg_to_send =
+                msg_to_send = "invalid"
                 print(msg_to_send)
                 #self.client_socket.send(msg_to_send.encode())
 
@@ -305,7 +305,7 @@ class client(Thread):
                 sock.send(msg.encode())
             except Queue.Empty:
                 pass
-        
+
 
 
 
