@@ -305,6 +305,7 @@ class client_reply(Thread):
         print("second thread")
 
     def run(self):
+        print("hello",server_socket2)
         server_socket2.listen(1)
         (client_soc,(client_ip_addr, client_port_num))=server_socket2.accept()
         print("ocket2 accepted",self.client_socket.fileno())
