@@ -299,9 +299,10 @@ class client(Thread):
 
     def broadcast(self,client_socket,msg):
         for sock in socket_connections:
-            print(sock)
-            #msg = s_queue[sock.fileno()].get(False)
-            sock.send(msg.encode())
+            if(sock != server_socket):
+                print(sock)
+                msg = s_queue[sock.fileno()].get(False)
+                sock.send(msg.encode())
 
 
 
