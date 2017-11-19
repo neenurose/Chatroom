@@ -299,13 +299,19 @@ class client(Thread):
         del socket_fileno[(self.client_id,chatroom_id_local)]
 
     def broadcast(self,client_socket,msg):
+        try:
+            msg = s_queue[client_socket.fileno()].get(False)
+            sock.send(msg.encode())
+        except Queue.Empty:
+            pass
+        '''
         while True:
             try:
-                msg = s_queue[sock.fileno()].get(False)
+                msg = s_queue[client_socket.fileno()].get(False)
                 sock.send(msg.encode())
             except Queue.Empty:
                 pass
-
+       '''
 
 
 
