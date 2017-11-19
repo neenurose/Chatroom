@@ -339,7 +339,7 @@ while True:
         (client_socket,(client_ip,client_port)) = server_socket.accept()
     except OSError as err:
         sys.exit()
-    q = queue.Queue()
+    q = Queue.Queue()
     thread_lock.acquire()
 
     s_queue[client_socket.fileno()] = q
