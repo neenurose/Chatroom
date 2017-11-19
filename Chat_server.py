@@ -300,8 +300,8 @@ class client(Thread):
 
     def broadcast(self,client_socket,msg):
         try:
-            msg = s_queue[client_socket.fileno()].get(False)
-            client_socket.send(msg.encode())
+            msg = s_queue[self.client_socket.fileno()].get(False)
+            self.client_socket.send(msg.encode())
         except Queue.Empty:
             pass
         '''
