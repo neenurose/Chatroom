@@ -347,6 +347,7 @@ while True:
     thread_lock.release()
 
     client_msg_helo = client_socket.recv(2048).decode()
+    print(client_msg_helo)
     #for HELO message from client
     if "HELO" in client_msg_helo:
         msg_helo = client_msg_helo+"\nIP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
