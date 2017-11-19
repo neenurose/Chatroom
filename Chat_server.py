@@ -299,7 +299,7 @@ class client(Thread):
         del socket_fileno[(self.client_id,chatroom_id_local)]
 
     def broadcast(self,client_socket,msg):
-        while true:
+        while True:
             try:
                 msg = s_queue[sock.fileno()].get(False)
                 sock.send(msg.encode())
