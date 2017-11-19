@@ -23,7 +23,7 @@ class client(Thread):
         #for HELO message from client
         if "HELO" in client_msg_helo:
             msg_helo = client_msg_helo+"\nIP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
-        self.client_socket.send(msg_helo.encode())
+            self.client_socket.send(msg_helo.encode())
 
         '''
         client_msg_to_join = self.client_socket.recv(2048).decode()
