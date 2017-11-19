@@ -58,9 +58,9 @@ class client(Thread):
         chatroom_id_local = 0
         chatroom_local = ""
         while True:
-
+            print("Inside loop\n\n")
             client_message = self.client_socket.recv(2048).decode()
-            #print("From client "+self.client_name+": "+client_message)
+            print("From client "+self.client_name+": "+client_message+"\n\n")
 
             if "KILL_SERVICE" in client_message:
                 server_socket2.close()
