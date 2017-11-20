@@ -210,7 +210,7 @@ class client(Thread):
                         #print(chatroom_id_local)
                         msg_to_chat_split = client_message.split(':')
                         msg_to_chat = msg_to_chat_split[len(msg_to_chat_split)-1]
-                        chat_msg = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE:"+msg_to_chat+"\n"
+                        chat_msg = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE:"+msg_to_chat+"\n\n"
                         if len(s_queue.values())>1:
                             #chat_msg = "CHAT: "+str(self.chatroom_id)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+client_message+"\n\n"
 
@@ -238,7 +238,7 @@ class client(Thread):
                             #thread_lock.release()
                             self.client_socket.send(msg_to_send.encode())
                     else:
-                        msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom.\n"
+                        msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom.\n\n"
                         self.client_socket.send(msg_to_send.encode())
             #else:
                 #msg_to_send = "invalid"
