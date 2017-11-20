@@ -19,15 +19,16 @@ class client(Thread):
         #print("New client thread started")
 
     def run(self):
-        '''
+
         client_msg_helo = self.client_socket.recv(2048).decode()
         #for HELO message from client
         if "HELO" in client_msg_helo:
             msg_helo = client_msg_helo+"\nIP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
             self.client_socket.send(msg_helo.encode())
-        '''
-        '''
+
+
         client_msg_to_join = self.client_socket.recv(2048).decode()
+        '''
         client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
         self.chatroom = client_msg_to_join_split[1]
         self.getRoomId();
@@ -57,6 +58,40 @@ class client(Thread):
         '''
         chatroom_id_local = 0
         chatroom_local = ""
+
+        client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
+        self.chatroom.append(client_msg_to_join_split[1])
+        chatroom_local = client_msg_to_join_split[1]
+        chatroom_id_local = self.getRoomId(chatroom_local);
+        self.client_name = client_msg_to_join_split[7]
+        self.getClientId()
+
+        self.setFileno(chatroom_id_local)
+        self.incrementCountClientChatroom()
+        self.assignChatroom(chatroom_id_local)
+
+        msg_joined = "JOINED_CHATROOM: "+chatroom_local+"\nSERVER_IP: "+host+"\nPORT: "+str(port)+"\nROOM_REF: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)+"\n\n"
+        print(msg_joined)
+        self.client_socket.send(msg_joined.encode())
+
+        client_joined_msg_to_chatroom = "CHAT:"+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name + " has joined this chatroom.\n\n"
+        chatroom_members = self.getChatroomMembers(chatroom_id_local)
+        print(chatroom_members)
+        fileno_arr = []
+        for item in chatroom_members:
+            fileno_arr.append(socket_fileno[(item,chatroom_id_local)])
+        #print("\nfilenos: ",fileno_arr)
+        thread_lock.acquire()
+        for key in s_queue.keys():
+            if key in fileno_arr:
+                q = s_queue[key]
+                q.put(client_joined_msg_to_chatroom)
+        thread_lock.release()
+
+        for f_no in fileno_arr:
+            self.broadcast(f_no)
+
+
         while True:
             #print("Inside loop\n\n")
             client_message = self.client_socket.recv(2048).decode()
