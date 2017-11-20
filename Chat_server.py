@@ -149,6 +149,7 @@ class client(Thread):
 
 
             if "LEAVE_CHATROOM" in client_message:
+                print(client_message)
                 client_msg_to_leave_split = re.findall(r"[\w']+",client_message)
                 #self.chatroom.append(client_msg_to_leave_split[1])
                 chatroom_id_local = client_msg_to_leave_split[1]
