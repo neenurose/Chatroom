@@ -69,13 +69,13 @@ class client(Thread):
                 msg_helo = client_msg_helo+"IP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
                 self.client_socket.send(msg_helo.encode())
 
-            if "KILL_SERVICE" in client_message:
+            elif "KILL_SERVICE" in client_message:
                 #server_socket2.close()
                 #server_socket.close()
                 #print(server_socket.fileno())
                 break;
 
-            if "DISCONNECT" in client_message.split(':')[0]:
+            elif "DISCONNECT" in client_message.split(':')[0]:
                 #print(client_message)
                 #thread_lock.acquire()
                 #del s_queue[self.client_socket.fileno()]
@@ -110,7 +110,7 @@ class client(Thread):
                 #break;
 
 
-            if "JOIN_CHATROOM" in client_message:
+            elif "JOIN_CHATROOM" in client_message:
                 client_msg_to_join = client_message
                 print("\nin join",client_msg_to_join+"\n")
                 client_msg_to_join_split = re.findall(r"[\w']+",client_msg_to_join)
@@ -148,7 +148,7 @@ class client(Thread):
 
                 print("complete")
 
-            if "LEAVE_CHATROOM" in client_message:
+            elif "LEAVE_CHATROOM" in client_message:
                 print(client_message)
                 client_msg_to_leave_split = re.findall(r"[\w']+",client_message)
                 #self.chatroom.append(client_msg_to_leave_split[1])
@@ -194,7 +194,7 @@ class client(Thread):
                 #break;
                 #self.client_socket.close()
                 #sys.exit()
-            if "CHAT" in client_message:
+            else: #"CHAT" in client_message:
                 #print(len(s_queue.values()))
                 client_msg_to_chat_split = re.findall(r"[\w']+",client_message)
 
