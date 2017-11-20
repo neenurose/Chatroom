@@ -210,6 +210,7 @@ class client(Thread):
                         #print(chatroom_id_local)
                         msg_to_chat_split = client_message.split(':')
                         msg_to_chat = msg_to_chat_split[len(msg_to_chat_split)-1]
+                        print(msg_to_chat)
                         chat_msg = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE:"+msg_to_chat
                         if len(s_queue.values())>1:
                             #chat_msg = "CHAT: "+str(self.chatroom_id)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+client_message+"\n\n"
