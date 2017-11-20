@@ -195,7 +195,7 @@ class client(Thread):
                 #break;
                 #self.client_socket.close()
                 #sys.exit()
-            else #"CHAT" in client_message:
+            else: #"CHAT" in client_message:
                 #print(len(s_queue.values()))
                 client_msg_to_chat_split = re.findall(r"[\w']+",client_message)
 
