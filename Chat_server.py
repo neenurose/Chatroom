@@ -161,7 +161,7 @@ class client(Thread):
                 self.client_socket.send(left_chatroom_msg.encode())
 
                 if len(s_queue.values())>1:
-                    msg_to_broadcast = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom.\n\n"
+                    msg_to_broadcast = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+self.client_name+" has left this chatroom.\n\n"
 
                     chatroom_members = self.getChatroomMembers(chatroom_id_local)
                     fileno_arr = []
