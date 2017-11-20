@@ -92,7 +92,7 @@ class client(Thread):
                     #del s_queue[self.client_socket.fileno()]
                     for key in s_queue.keys():
                         #print(s_queue)
-                        if key != self.client_socket.fileno() and key in fileno_arr:
+                        if key in fileno_arr:
                             q = s_queue[key]
                             q.put(disconnect_msg)
                     thread_lock.release()
@@ -106,7 +106,7 @@ class client(Thread):
                 self.chatroom_id = []
 
 
-                self.client_socket.send(disconnect_msg.encode())
+                #self.client_socket.send(disconnect_msg.encode())
                 #self.client_socket.shutdown(socket.SHUT_RDWR)
                 #self.client_socket.close()
                 #break;
