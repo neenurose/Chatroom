@@ -156,8 +156,12 @@ class client(Thread):
                 chatroom_id_local = int(chatroom_id_local)
                 #chatroom_id_local = self.getRoomId(chatroom_local);
 
+                left_chatroom_msg = "LEFT_CHATROOM: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)+"\n"
+                print(left_chatroom_msg)
+                self.client_socket.send(left_chatroom_msg.encode())
+
                 if len(s_queue.values())>1:
-                    msg_to_broadcast = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom.\n"
+                    msg_to_broadcast = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom.\n\n"
 
                     chatroom_members = self.getChatroomMembers(chatroom_id_local)
                     fileno_arr = []
@@ -188,9 +192,6 @@ class client(Thread):
                     thread_lock.release()
                 self.chatroom_id.remove(chatroom_id_local)
 
-                left_chatroom_msg = "LEFT_CHATROOM: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)+"\n"
-                print(left_chatroom_msg)
-                self.client_socket.send(left_chatroom_msg.encode())
                 #break;
                 #self.client_socket.close()
                 #sys.exit()
