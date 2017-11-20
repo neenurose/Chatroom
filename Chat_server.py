@@ -124,7 +124,7 @@ class client(Thread):
                 self.incrementCountClientChatroom()
                 self.assignChatroom(chatroom_id_local)
 
-                msg_joined = "JOINED_CHATROOM: "+chatroom_local+"\nSERVER_IP: "+host+"\nPORT: "+str(port)+"\nROOM_REF: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)+"\n\n"
+                msg_joined = "JOINED_CHATROOM: "+chatroom_local+"\nSERVER_IP: "+host+"\nPORT: "+str(port)+"\nROOM_REF: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)
                 print(msg_joined)
                 self.client_socket.send(msg_joined.encode())
 
