@@ -128,7 +128,7 @@ class client(Thread):
                 print(msg_joined)
                 self.client_socket.send(msg_joined.encode())
 
-                client_joined_msg_to_chatroom = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+self.client_name + " has joined this chatroom.\n\n"
+                client_joined_msg_to_chatroom = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+self.client_name + " has joined this chatroom.\n"
                 chatroom_members = self.getChatroomMembers(chatroom_id_local)
                 print(chatroom_members)
                 fileno_arr = []
@@ -156,7 +156,7 @@ class client(Thread):
                 #chatroom_id_local = self.getRoomId(chatroom_local);
 
                 if len(s_queue.values())>1:
-                    msg_to_broadcast = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom.\n\n"
+                    msg_to_broadcast = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom.\n"
 
                     chatroom_members = self.getChatroomMembers(chatroom_id_local)
                     fileno_arr = []
@@ -167,10 +167,12 @@ class client(Thread):
                     #del s_queue[self.client_socket.fileno()]
                     for key in s_queue.keys():
                         #print(s_queue)
-                        if key != self.client_socket.fileno() and key in fileno_arr:
+                        if key in fileno_arr:
                             q = s_queue[key]
                             q.put(msg_to_broadcast)
                     thread_lock.release()
+                    for f_no in fileno_arr:
+                        self.broadcast(f_no)
 
                     self.decrementCountClientChatroom()
                     self.deassignChatroom(chatroom_id_local)
@@ -185,7 +187,7 @@ class client(Thread):
                     thread_lock.release()
                 self.chatroom_id.remove(chatroom_id_local)
 
-                left_chatroom_msg = "\nLEFT_CHATROOM: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)
+                left_chatroom_msg = "LEFT_CHATROOM: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)+"\n"
                 self.client_socket.send(left_chatroom_msg.encode())
                 #break;
                 #self.client_socket.close()
@@ -205,7 +207,7 @@ class client(Thread):
                         #print(chatroom_id_local)
                         msg_to_chat_split = client_message.split(':')
                         msg_to_chat = msg_to_chat_split[len(msg_to_chat_split)-1]
-                        chat_msg = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE:"+msg_to_chat+"\n\n"
+                        chat_msg = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE:"+msg_to_chat+"\n"
                         if len(s_queue.values())>1:
                             #chat_msg = "CHAT: "+str(self.chatroom_id)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+client_message+"\n\n"
 
@@ -219,11 +221,13 @@ class client(Thread):
 
                             for key in s_queue.keys():
                                 #print(s_queue)
-                                if key != self.client_socket.fileno() and key in fileno_arr:
+                                if key in fileno_arr:
                                     q = s_queue[key]
                                     q.put(chat_msg)
                             thread_lock.release()
                             self.client_socket.send((chat_msg).encode())
+                            for f_no in fileno_arr:
+                                self.broadcast(f_no)
                         else:
                             msg_to_send = chat_msg
                             #thread_lock.acquire()
@@ -231,7 +235,7 @@ class client(Thread):
                             #thread_lock.release()
                             self.client_socket.send(msg_to_send.encode())
                     else:
-                        msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom."
+                        msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom.\n"
                         self.client_socket.send(msg_to_send.encode())
             #else:
                 #msg_to_send = "invalid"
@@ -314,19 +318,9 @@ class client(Thread):
                 except Queue.Empty:
                     pass
 
-        '''
-        while True:
-            try:
-                msg = s_queue[client_socket.fileno()].get(False)
-                sock.send(msg.encode())
-            except Queue.Empty:
-                pass
-       '''
 
 
-
-
-
+'''
 
 class client_reply(Thread):
     def __init__(self,client_socket):
@@ -349,7 +343,7 @@ class client_reply(Thread):
                 msg = "no message"
             except KeyError as e:
                 pass
-
+'''
 
 chatroom_dict = {}
 client_dict = {}
@@ -358,7 +352,6 @@ client_chatroom_number = {}
 socket_fileno = {}
 socket_connections = []
 
-fileno_arr = []
 
 thread_lock = threading.Lock()
 s_queue = {}
