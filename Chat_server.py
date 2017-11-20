@@ -231,12 +231,14 @@ class client(Thread):
                             self.client_socket.send((chat_msg).encode())
                             for f_no in fileno_arr:
                                 self.broadcast(f_no)
+                        '''
                         else:
                             msg_to_send = chat_msg
                             #thread_lock.acquire()
                             #s_queue[self.client_socket.fileno()].put(msg_to_send)
                             #thread_lock.release()
                             self.client_socket.send(msg_to_send.encode())
+                        '''
                     else:
                         msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom."
                         self.client_socket.send(msg_to_send.encode())
