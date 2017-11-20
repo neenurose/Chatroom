@@ -195,7 +195,7 @@ class client(Thread):
                 #break;
                 #self.client_socket.close()
                 #sys.exit()
-            else: #"CHAT" in client_message:
+            elif "CHAT" in client_message:
                 #print(len(s_queue.values()))
                 client_msg_to_chat_split = re.findall(r"[\w']+",client_message)
 
@@ -240,8 +240,8 @@ class client(Thread):
                     else:
                         msg_to_send = "CHAT: "+str(chatroom_id_local)+"\nCLIENT_NAME: "+self.client_name+"\n"+self.client_name+" has left this chatroom.\n\n"
                         self.client_socket.send(msg_to_send.encode())
-            #else:
-                #msg_to_send = "invalid"
+            else:
+                msg_to_send = "invalid"
                 #print(msg_to_send)
                 #self.broadcast()
                 #self.client_socket.send(msg_to_send.encode())
