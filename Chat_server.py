@@ -372,7 +372,7 @@ server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 if len(sys.argv) != 2:
     print("Please provide port number")
     exit()
-host = '0.0.0.0'
+host = server_socket.gethostbyname(socket.gethostname())
 port = int(sys.argv[1])
 
 server_socket.bind(('',port))
