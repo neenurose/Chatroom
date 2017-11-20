@@ -188,6 +188,7 @@ class client(Thread):
                 self.chatroom_id.remove(chatroom_id_local)
 
                 left_chatroom_msg = "LEFT_CHATROOM: "+str(chatroom_id_local)+"\nJOIN_ID: "+str(self.client_id)+"\n"
+                print(left_chatroom_msg)
                 self.client_socket.send(left_chatroom_msg.encode())
                 #break;
                 #self.client_socket.close()
