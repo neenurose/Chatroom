@@ -66,7 +66,7 @@ class client(Thread):
 
             client_msg_helo = client_message
             if "HELO" in client_msg_helo:
-                msg_helo = client_msg_helo+"\nIP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
+                msg_helo = client_msg_helo+"IP:"+host+"\nPort:"+str(port)+"\nStudentID:17312349\n"
                 self.client_socket.send(msg_helo.encode())
 
             if "KILL_SERVICE" in client_message:
