@@ -82,7 +82,7 @@ class client(Thread):
                 #thread_lock.release()
                 disconnect_msg_1 = self.client_name+" has left this chatroom.\n\n"
                 for i in self.chatroom_id:
-                    disconnect_msg = "CHAT: "+str(i)+"\nCLIENT_NAME: "+self.client_name+"\n"+disconnect_msg_1
+                    disconnect_msg = "CHAT: "+str(i)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+disconnect_msg_1
                     chatroom_members = self.getChatroomMembers(i)
                     fileno_arr = []
                     for item in chatroom_members:
