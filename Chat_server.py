@@ -216,7 +216,7 @@ class client(Thread):
                             #chat_msg = "CHAT: "+str(self.chatroom_id)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+client_message+"\n\n"
 
                             chatroom_members = self.getChatroomMembers(chatroom_id_local)
-                            #print(chatroom_members)
+                            print(chatroom_members)
                             fileno_arr = []
                             for item in chatroom_members:
                                 fileno_arr.append(socket_fileno[(item,chatroom_id_local)])
@@ -229,7 +229,7 @@ class client(Thread):
                                     q = s_queue[key]
                                     q.put(chat_msg)
                             thread_lock.release()
-                            self.client_socket.send((chat_msg).encode())
+                            #self.client_socket.send((chat_msg).encode())
                             for f_no in fileno_arr:
                                 self.broadcast(f_no)
                         '''
