@@ -60,7 +60,7 @@ class client(Thread):
 
 
         while True:
-            #print("Inside loop\n\n")
+            print("Inside loop\n\n")
             client_message = self.client_socket.recv(2048).decode()
             print("From client "+self.client_name+": "+client_message+"\n\n")
 
@@ -146,7 +146,7 @@ class client(Thread):
                     self.broadcast(f_no)
                 #self.broadcast(self.client_socket,client_joined_msg_to_chatroom)
 
-
+                print("complete")
 
             if "LEAVE_CHATROOM" in client_message:
                 print(client_message)
