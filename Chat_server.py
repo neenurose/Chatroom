@@ -39,7 +39,7 @@ class client(Thread):
                     #server_socket2.close()
                     server_socket.shutdown(socket.SHUT_RDWR)
                     server_socket.close()
-                    exit(0)
+                    #exit(0)
                     #print(server_socket.fileno())
                     break;
 
@@ -224,7 +224,7 @@ class client(Thread):
 
             except:
                 error_msg = "ERROR_CODE: 1\nERROR_DESCRIPTION: "+str(sys.exc_info()[0])
-                print(error_msg)
+                #print(error_msg)
                 if self.client_socket.fileno()!=-1:
                     self.client_socket.send(error_msg.encode())
 
