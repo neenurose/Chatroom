@@ -39,6 +39,7 @@ class client(Thread):
                     #server_socket2.close()
                     server_socket.shutdown(socket.SHUT_RDWR)
                     server_socket.close()
+                    exit(0)
                     #print(server_socket.fileno())
                     break;
 
