@@ -222,7 +222,10 @@ class client(Thread):
 
             except:
                 error_msg = "ERROR_CODE: 1\nERROR_DESCRIPTION: "+str(sys.exc_info()[0])
-                self.client_socket.send(error_msg.encode())
+                print(error_msg)
+                if self.client_socket.fileno()!=-1:
+                    self.client_socket.send(error_msg.encode())
+
 
 
 
