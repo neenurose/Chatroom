@@ -221,7 +221,7 @@ class client(Thread):
                     #self.client_socket.send(msg_to_send.encode())
 
             except:
-                error_msg = "ERROR_CODE: 1\nERROR_DESCRIPTION: "+sys.exc_info()[0]
+                error_msg = "ERROR_CODE: 1\nERROR_DESCRIPTION: "+str(sys.exc_info()[0])
                 self.client_socket.send(error_msg.encode())
 
 
