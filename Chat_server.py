@@ -37,6 +37,7 @@ class client(Thread):
 
                 elif "KILL_SERVICE" in client_message:
                     #server_socket2.close()
+                    server_socket.shutdown(socket.SHUT_RDWR)
                     server_socket.close()
                     #print(server_socket.fileno())
                     break;
