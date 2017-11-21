@@ -1,9 +1,9 @@
 import socket
 import sys
-import Queue
+import queue
 import threading
 from threading import Thread
-from SocketServer import ThreadingMixIn
+from socketserver import ThreadingMixIn
 import re
 
 class client(Thread):
@@ -322,7 +322,7 @@ class client(Thread):
                     msg = s_queue[sock.fileno()].get(False)
                     print(msg)
                     sock.send(msg.encode())
-                except Queue.Empty:
+                except queue.Empty:
                     pass
 
 
@@ -387,7 +387,7 @@ while True:
         socket_connections.append(client_socket)
     except (OSError):
         sys.exit()
-    q = Queue.Queue()
+    q = queue.Queue()
     thread_lock.acquire()
 
     s_queue[client_socket.fileno()] = q
