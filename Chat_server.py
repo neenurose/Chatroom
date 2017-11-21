@@ -44,40 +44,46 @@ class client(Thread):
                     break;
 
                 elif "DISCONNECT" in client_message.split(':')[0]:
-                    #print(client_message)
-                    #thread_lock.acquire()
-                    #del s_queue[self.client_socket.fileno()]
-                    #thread_lock.release()
-                    disconnect_msg_1 = self.client_name+" has left this chatroom.\n\n"
-                    for i in self.chatroom_id:
-                        disconnect_msg = "CHAT: "+str(i)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+disconnect_msg_1
-                        chatroom_members = self.getChatroomMembers(i)
-                        fileno_arr = []
-                        for item in chatroom_members:
-                            fileno_arr.append(socket_fileno[(item,i)])
-
-                        thread_lock.acquire()
+                    try:
+                        #print(client_message)
+                        #thread_lock.acquire()
                         #del s_queue[self.client_socket.fileno()]
-                        for key in s_queue.keys():
-                            #print(s_queue)
-                            if key in fileno_arr:
-                                q = s_queue[key]
-                                q.put(disconnect_msg)
-                        thread_lock.release()
-                        for f_no in fileno_arr:
-                            self.broadcast(f_no)
-                        #print(i)
-                        self.decrementCountClientChatroom()
-                        self.deassignChatroom(i)
-                        self.removeFileno(i)
+                        #thread_lock.release()
+                        disconnect_msg_1 = self.client_name+" has left this chatroom.\n\n"
+                        for i in self.chatroom_id:
+                            disconnect_msg = "CHAT: "+str(i)+"\nCLIENT_NAME: "+self.client_name+"\nMESSAGE: "+disconnect_msg_1
+                            chatroom_members = self.getChatroomMembers(i)
+                            fileno_arr = []
+                            for item in chatroom_members:
+                                fileno_arr.append(socket_fileno[(item,i)])
+
+                            thread_lock.acquire()
+                            #del s_queue[self.client_socket.fileno()]
+                            for key in s_queue.keys():
+                                #print(s_queue)
+                                if key in fileno_arr:
+                                    q = s_queue[key]
+                                    q.put(disconnect_msg)
+                            thread_lock.release()
+                            for f_no in fileno_arr:
+                                self.broadcast(f_no)
+                            #print(i)
+                            self.decrementCountClientChatroom()
+                            self.deassignChatroom(i)
+                            self.removeFileno(i)
+                            #self.client_socket.send(disconnect_msg.encode())
+                        self.chatroom_id = []
+
+
                         #self.client_socket.send(disconnect_msg.encode())
-                    self.chatroom_id = []
+                        #self.client_socket.shutdown(socket.SHUT_RDWR)
+                        #self.client_socket.close()
+                        #break;
+                    except:
+                        error_msg = "ERROR_CODE: 1\nERROR_DESCRIPTION: "+str(sys.exc_info()[0])
+                        #print(error_msg)
+                        self.client_socket.send(error_msg.encode())
 
-
-                    #self.client_socket.send(disconnect_msg.encode())
-                    #self.client_socket.shutdown(socket.SHUT_RDWR)
-                    #self.client_socket.close()
-                    #break;
 
 
                 elif "JOIN_CHATROOM" in client_message:
