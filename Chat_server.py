@@ -385,7 +385,7 @@ while True:
     try:
         (client_socket,(client_ip,client_port)) = server_socket.accept()
         socket_connections.append(client_socket)
-    except OSError as err:
+    except OSError,socket.error as err:
         sys.exit()
     q = Queue.Queue()
     thread_lock.acquire()
