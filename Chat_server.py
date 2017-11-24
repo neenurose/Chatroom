@@ -257,7 +257,7 @@ class client(Thread):
 
 
 
-
+    #To generate and return the room ref when chatroom name is passed
     def getRoomId(self,chatroom_local):
         flag = 0;
         for key in chatroom_dict:
@@ -270,6 +270,7 @@ class client(Thread):
         chatroom_id_local = chatroom_dict[chatroom_local.lower()]
         return chatroom_id_local
 
+   #The following is the function to generate the join id when client name is given
     def getClientId(self):
         flag = 0
         for key in client_dict:
@@ -279,6 +280,7 @@ class client(Thread):
             client_dict[self.client_name.lower()] = len(client_dict)+1
         self.client_id = client_dict[self.client_name.lower()]
 
+    #To count the number of chatrooms client has joined
     def incrementCountClientChatroom(self):
         flag = 0
         for key in client_chatroom_number:
@@ -289,12 +291,14 @@ class client(Thread):
             client_chatroom_number[self.client_id] = 1
         #print("\ncount: ",client_chatroom_number)
 
+    #To decrement the chatroom count when a client leaves a chatroom
     def decrementCountClientChatroom(self):
         client_chatroom_number[self.client_id] = client_chatroom_number[self.client_id] - 1
         if client_chatroom_number[self.client_id] <= 0:
             del client_chatroom_number[self.client_id]
         #print("\ncount: ",client_chatroom_number)
 
+    #To store the join ids of the clients who are currently in a chatroom
     def assignChatroom(self,chatroom_id_local):
         flag = 0
         for key in chatroom_details:
@@ -305,22 +309,27 @@ class client(Thread):
             chatroom_details[chatroom_id_local] = [self.client_id]
         #print("\nchatroom: ",chatroom_details)
 
+    #To remove the join id of the client from the list of clients who are in a particular chatroom when that client leaves the chatroom
     def deassignChatroom(self,chatroom_id_local):
         chatroom_details[chatroom_id_local].remove(self.client_id)
         if len(chatroom_details[chatroom_id_local]) == 0:
             del chatroom_details[chatroom_id_local]
         #print("\nchatroom: ",chatroom_details)
 
+    #To get all the clients who are currently in a chatroom
     def getChatroomMembers(self,chatroom_id_local):
         #print(chatroom_details)
         return chatroom_details[chatroom_id_local]
 
+    #To store the client socket file descriptors of the client as value to the key (join id, room ref) when client joins chatroom
     def setFileno(self,chatroom_id_local):
         socket_fileno[(self.client_id,chatroom_id_local)] = self.client_socket.fileno()
 
+    #To remove the key (join id,room ref) when client leaves a chatroom
     def removeFileno(self,chatroom_id_local):
         del socket_fileno[(self.client_id,chatroom_id_local)]
 
+    #To send the messages to each and every client in a particular chatroom
     def broadcast(self,f_no):
         for sock in socket_connections:
             if sock.fileno()==f_no:
@@ -358,16 +367,16 @@ class client_reply(Thread):
                 pass
 '''
 
-chatroom_dict = {}
-client_dict = {}
-chatroom_details = {}
-client_chatroom_number = {}
-socket_fileno = {}
-socket_connections = []
+chatroom_dict = {}    #Stores chatroom name as key and room ref as value
+client_dict = {}    #Stores the client name as key and join id as value
+chatroom_details = {}    #Stores roof ref as key and list of join ids of the client who has joind that room as values
+client_chatroom_number = {}    #Stores the join id as key and the count of number of chatrooms that client has joined as values
+socket_fileno = {}    #Stores (join id, room ref) as key and the client socket file descriptor as value
+socket_connections = []    #Stores the client socket of the clients connected to server
 
 
 thread_lock = threading.Lock()
-s_queue = {}
+s_queue = {}    #Stores the message to be send to client as value and client socket filedescriptor as key 
 #Creating a socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
